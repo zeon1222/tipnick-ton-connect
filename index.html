@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TipNick TON Connect</title>
+    <script src="https://unpkg.com/@tonconnect/sdk@1.0.0/dist/tonconnect-ui.min.js"></script>
+</head>
+<body>
+    <h1>TipNick Bot - Cüzdan Bağla</h1>
+    <button id="connectBtn">TON Cüzdanını Bağla</button>
+    <div id="status"></div>
+
+    <script>
+        const connector = new TON_CONNECT_UI.TonConnectUI({
+            manifestUrl: 'https://tipnickbot.vercel.app/tonconnect-manifest.json'  // Bu dosyayı da repo'ya ekle
+        });
+
+        document.getElementById('connectBtn').onclick = () => {
+            connector.connectWallet();
+        };
+
+        connector.onStatusChange(wallet => {
+            document.getElementById('status').innerHTML = wallet ? `Bağlandı: ${wallet.account.address}` : 'Bağlanmadı';
+        });
+    </script>
+</body>
+</html>
