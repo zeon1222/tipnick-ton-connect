@@ -1,7 +1,7 @@
 {
-  "url": "https://tipnick-ton-connectx.vercel.app",
+  "url": "https://tipnick-ton-connect.vercel.app",
   "name": "TipNick Bot",
-  "iconUrl": "https://tipnick-ton-connectx.vercel.app/icon.png",
-  "termsOfUseUrl": "https://tipnick-ton-connectx.vercel.app/terms",
-  "privacyPolicyUrl": "https://tipnick-ton-connectx.vercel.app/privacy"
+  "iconUrl": "https://raw.githubusercontent.com/ton-blockchain/ton-assets/main/tonconnect-icon.png",
+  "termsOfUseUrl": "https://t.me/tipnickbot",
+  "privacyPolicyUrl": "https://t.me/tipnickbot"
 }
