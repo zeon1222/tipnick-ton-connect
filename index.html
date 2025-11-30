@@ -6,17 +6,16 @@
   <title>TipNick - Cüzdan Bağla</title>
   <script src="https://unpkg.com/@tonconnect/ui@latest"></script>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; padding: 60px 20px; background: #000; color: #fff; }
-    h1 { color: #8A2BE2; margin-bottom: 10px; }
-    p { font-size: 18px; margin-bottom: 40px; }
-    #status { margin-top: 20px; font-size: 16px; }
+    body {font-family:Arial;background:#000;color:#fff;text-align:center;padding:50px;}
+    h1 {color:#8A2BE2;}
+    #connectButton {padding:20px 40px;font-size:20px;background:#8A2BE2;color:white;border:none;border-radius:15px;cursor:pointer;}
   </style>
 </head>
 <body>
   <h1>TipNick Bot</h1>
-  <p>@nick ile TON almaya başla!</p>
-  <div id="connectButton"></div>
-  <div id="status"></div>
+  <p>Cüzdanını bağla, @nick ile TON al!</p>
+  <button id="connectButton">CÜZDANI BAĞLA</button>
+  <p id="status" style="margin-top:20px;"></p>
 
   <script>
     const connector = new TON_CONNECT.UI.TonConnectUI({
@@ -24,34 +23,34 @@
       walletsListSource: 'https://raw.githubusercontent.com/ton-blockchain/wallets-list/main/wallets.json'
     });
 
-    const connectButton = document.getElementById('connectButton');
-    const statusDiv = document.getElementById('status');
+    const button = document.getElementById('connectButton');
+    const status = document.getElementById('status');
     
-    connector.uiOptions = { ui: { button: connectButton } };
+    connector.uiOptions = {
+      ui: {
+        button: {
+          element: button
+        }
+      }
+    };
 
-    connector.onStatusChange(async (wallet) => {
+    connector.onStatusChange((wallet) => {
       if (wallet) {
-        const address = wallet.account.address;
+        const addr = wallet.account.address;
+        status.innerHTML = `<span style="color:#0f0">Bağlandı!<br>\( {addr.substring(0,10)}... \){addr.slice(-8)}</span>`;
+        
+        // Bot'a cüzdan adresini gönder
         const userId = new URLSearchParams(window.location.search).get('user');
-        const botToken = '8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w';
-
-        // Kullanıcıya bilgi
-        statusDiv.innerHTML = `<p style="color:#0f0">Cüzdan bağlandı!<br>\( {address.substring(0,10)}... \){address.slice(-8)}</p>`;
-
-        // Bot veritabanına kaydetmek için kendi sunucuna gönder (senin botun alacak)
-        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        fetch(`https://api.telegram.org/bot8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w/sendMessage`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             chat_id: userId,
-            text: `WALLET_CONNECTED:${address}`
+            text: `WALLET_CONNECTED:${addr}`
           })
         });
-
-        setTimeout(() => {
-          alert("Cüzdan başarıyla bağlandı!");
-          window.close();
-        }, 1500);
+        
+        setTimeout(() => alert("Cüzdan başarıyla bağlandı!"), 1000);
       }
     });
   </script>
