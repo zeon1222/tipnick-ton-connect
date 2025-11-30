@@ -3,40 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TipNick Cüzdan</title>
-  <!-- EN YENİ ÇALIŞAN KÜTÜPHANE -->
-  <script type="module" src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
+  <title>TipNick - Cüzdan Bağla</title>
+  <script src="https://unpkg.com/@tonconnect/ui@1"></script>
   <style>
     body {background:#000;color:#fff;text-align:center;padding:60px;font-family:Arial;}
     h1 {color:#8A2BE2;}
-    button {background:#8A2BE2;color:#fff;padding:18px 50px;font-size:22px;border:none;border-radius:50px;margin-top:40px;}
+    #connectButton {background:#8A2BE2;color:#fff;padding:20px 60px;font-size:22px;border:none;border-radius:50px;margin-top:40px;}
   </style>
 </head>
 <body>
   <h1>TipNick Bot</h1>
   <p>@nick ile TON almaya başla!</p>
-  <button id="connect">CÜZDANI BAĞLA</button>
-  <p id="status"></p>
+  <div id="connectButton"></div>
+  <p id="status" style="margin-top:30px;"></p>
 
-  <script type="module">
-    import { TonConnectUI } from "https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js";
-
-    const tonConnectUI = new TonConnectUI({
-      manifestUrl: "https://ton.org/global-config.json",
-      buttonRootId: "connect"
+  <script>
+    const tonConnectUI = new TON_CONNECT.UI.TonConnectUI({
+      manifestUrl: 'https://zeon1222.github.io/tipnick-ton-connect/tonconnect-manifest.json',
+      buttonRootId: 'connectButton'
     });
 
-    tonConnectUI.onStatusChange((wallet) => {
+    tonConnectUI.onStatusChange(wallet => {
       if (wallet) {
         const addr = wallet.account.address;
-        document.getElementById("status").innerHTML = 
-          `<span style="color:#0f0">Bağlandı!<br>\( {addr.slice(0,8)}... \){addr.slice(-6)}</span>`;
+        document.getElementById('status').innerHTML = 
+          `<b style="color:#0f8">Bağlandı!</b><br>\( {addr.slice(0,8)}... \){addr.slice(-6)}`;
 
-        // Bot'a gönder
-        const userId = new URLSearchParams(location.search).get("user");
-        fetch("https://api.telegram.org/bot8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w/sendMessage", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const userId = new URLSearchParams(location.search).get('user');
+        fetch('https://api.telegram.org/bot8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w/sendMessage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             chat_id: userId,
             text: `WALLET_CONNECTED:${addr}`
