@@ -3,39 +3,41 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TipNick - Cüzdan Bağla</title>
-  <script src="https://unpkg.com/@tonconnect/ui@1"></script>
+  <title>TipNick Cüzdan</title>
+  <!-- EN ÇOK ÇALIŞAN KÜTÜPHANE (2025) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@1.0.0/dist/tonconnect-ui.min.js"></script>
   <style>
-    body {background:#000;color:#fff;text-align:center;padding:60px;font-family:Arial;}
-    h1 {color:#8A2BE2;}
-    #connectButton {background:#8A2BE2;color:#fff;padding:20px 60px;font-size:22px;border:none;border-radius:50px;margin-top:40px;}
+    body {background:#000;color:#fff;text-align:center;padding:60px;font-family:sans-serif;}
+    h1 {color:#8A2BE2;font-size:28px;}
+    p {font-size:18px;margin:30px 0;}
+    #connect-button {background:#8A2BE2;color:#fff;padding:20px 80px;font-size:22px;border:none;border-radius:50px;}
   </style>
 </head>
 <body>
   <h1>TipNick Bot</h1>
   <p>@nick ile TON almaya başla!</p>
-  <div id="connectButton"></div>
-  <p id="status" style="margin-top:30px;"></p>
+  <div id="connect-button">CÜZDANI BAĞLA</div>
+  <p id="status" style="margin-top:30px;font-size:16px;"></p>
 
   <script>
-    const tonConnectUI = new TON_CONNECT.UI.TonConnectUI({
+    const tonConnectUI = new TonConnectUI({
       manifestUrl: 'https://zeon1222.github.io/tipnick-ton-connect/tonconnect-manifest.json',
-      buttonRootId: 'connectButton'
+      buttonRootId: 'connect-button'
     });
 
     tonConnectUI.onStatusChange(wallet => {
       if (wallet) {
         const addr = wallet.account.address;
         document.getElementById('status').innerHTML = 
-          `<b style="color:#0f8">Bağlandı!</b><br>\( {addr.slice(0,8)}... \){addr.slice(-6)}`;
+          '<span style="color:#0f0">Bağlandı! ' + addr.slice(0,8) + '...' + addr.slice(-6) + '</span>';
 
         const userId = new URLSearchParams(location.search).get('user');
         fetch('https://api.telegram.org/bot8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w/sendMessage', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             chat_id: userId,
-            text: `WALLET_CONNECTED:${addr}`
+            text: 'WALLET_CONNECTED:' + addr
           })
         });
       }
