@@ -1,101 +1,49 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TipNick Cüzdan Bağla</title>
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-        p {
-            font-size: 16px;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        #connectButton {
-            background: #0088cc;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 18px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
-            transition: all 0.2s;
-        }
-        #connectButton:hover {
-            background: #0077b3;
-            transform: translateY(-2px);
-        }
-        #status {
-            margin-top: 20px;
-            font-size: 14px;
-            min-height: 20px;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TipNick Cüzdan</title>
+  <!-- EN YENİ ÇALIŞAN KÜTÜPHANE -->
+  <script type="module" src="https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js"></script>
+  <style>
+    body {background:#000;color:#fff;text-align:center;padding:60px;font-family:Arial;}
+    h1 {color:#8A2BE2;}
+    button {background:#8A2BE2;color:#fff;padding:18px 50px;font-size:22px;border:none;border-radius:50px;margin-top:40px;}
+  </style>
 </head>
 <body>
-    <h1>💜 TipNick Bot</h1>
-    <p>Cüzdanını bağla ve @nick ile TON almaya başla!</p>
-    <button id="connectButton">CÜZDANI BAĞLA</button>
-    <div id="status"></div>
+  <h1>TipNick Bot</h1>
+  <p>@nick ile TON almaya başla!</p>
+  <button id="connect">CÜZDANI BAĞLA</button>
+  <p id="status"></p>
 
-    <script>
-        const manifestUrl = 'https://zeon1222.github.io/tipnick-ton-connect/tonconnect-manifest.json';
-        const connector = new TonConnectUI.TonConnectUI({
-            manifestUrl: manifestUrl
+  <script type="module">
+    import { TonConnectUI } from "https://unpkg.com/@tonconnect/ui@2.0.0/dist/tonconnect-ui.min.js";
+
+    const tonConnectUI = new TonConnectUI({
+      manifestUrl: "https://ton.org/global-config.json",
+      buttonRootId: "connect"
+    });
+
+    tonConnectUI.onStatusChange((wallet) => {
+      if (wallet) {
+        const addr = wallet.account.address;
+        document.getElementById("status").innerHTML = 
+          `<span style="color:#0f0">Bağlandı!<br>\( {addr.slice(0,8)}... \){addr.slice(-6)}</span>`;
+
+        // Bot'a gönder
+        const userId = new URLSearchParams(location.search).get("user");
+        fetch("https://api.telegram.org/bot8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w/sendMessage", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: userId,
+            text: `WALLET_CONNECTED:${addr}`
+          })
         });
-
-        const button = document.getElementById('connectButton');
-        const status = document.getElementById('status');
-
-        button.onclick = () => {
-            connector.openModal();
-        };
-
-        connector.onStatusChange(wallet => {
-            if (wallet) {
-                const address = wallet.account.address;
-                status.innerHTML = `✅ Bağlandı! \( {address.substring(0, 6)}... \){address.substring(-6)}`;
-                status.style.color = '#4ade80';
-
-                // Bot'a adresi gönder
-                const userId = new URLSearchParams(location.search).get('user');
-                const botToken = '8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w';
-                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: userId,
-                        text: `WALLET_CONNECTED:${address}`
-                    })
-                }).then(() => {
-                    setTimeout(() => {
-                        alert('Cüzdan başarıyla bağlandı!');
-                        window.close();
-                    }, 1000);
-                });
-            } else {
-                status.innerHTML = 'Bağlantı kesildi.';
-                status.style.color = '#ef4444';
-            }
-        });
-    </script>
+      }
+    });
+  </script>
 </body>
 </html>
