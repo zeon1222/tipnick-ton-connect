@@ -1,26 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>TipNick TON Connect</title>
-    <script src="https://unpkg.com/@tonconnect/sdk@1.0.0/dist/tonconnect-ui.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TipNick - Cüzdan Bağla</title>
+  <script src="https://unpkg.com/@tonconnect/ui@latest"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; padding: 60px 20px; background: #000; color: #fff; }
+    h1 { color: #8A2BE2; margin-bottom: 10px; }
+    p { font-size: 18px; margin-bottom: 40px; }
+    #status { margin-top: 20px; font-size: 16px; }
+  </style>
 </head>
 <body>
-    <h1>TipNick Bot - Cüzdan Bağla</h1>
-    <button id="connectBtn">TON Cüzdanını Bağla</button>
-    <div id="status"></div>
+  <h1>TipNick Bot</h1>
+  <p>@nick ile TON almaya başla!</p>
+  <div id="connectButton"></div>
+  <div id="status"></div>
 
-    <script>
-        const connector = new TON_CONNECT_UI.TonConnectUI({
-            manifestUrl: 'https://tipnickbot.vercel.app/tonconnect-manifest.json'  // Bu dosyayı da repo'ya ekle
+  <script>
+    const connector = new TON_CONNECT.UI.TonConnectUI({
+      manifestUrl: 'https://zeon1222.github.io/tipnick-ton-connect/tonconnect-manifest.json',
+      walletsListSource: 'https://raw.githubusercontent.com/ton-blockchain/wallets-list/main/wallets.json'
+    });
+
+    const connectButton = document.getElementById('connectButton');
+    const statusDiv = document.getElementById('status');
+    
+    connector.uiOptions = { ui: { button: connectButton } };
+
+    connector.onStatusChange(async (wallet) => {
+      if (wallet) {
+        const address = wallet.account.address;
+        const userId = new URLSearchParams(window.location.search).get('user');
+        const botToken = '8594170263:AAFtKwS95XuYcxbEL4OiiJEwD2en6nA234w';
+
+        // Kullanıcıya bilgi
+        statusDiv.innerHTML = `<p style="color:#0f0">Cüzdan bağlandı!<br>\( {address.substring(0,10)}... \){address.slice(-8)}</p>`;
+
+        // Bot veritabanına kaydetmek için kendi sunucuna gönder (senin botun alacak)
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: userId,
+            text: `WALLET_CONNECTED:${address}`
+          })
         });
 
-        document.getElementById('connectBtn').onclick = () => {
-            connector.connectWallet();
-        };
-
-        connector.onStatusChange(wallet => {
-            document.getElementById('status').innerHTML = wallet ? `Bağlandı: ${wallet.account.address}` : 'Bağlanmadı';
-        });
-    </script>
+        setTimeout(() => {
+          alert("Cüzdan başarıyla bağlandı!");
+          window.close();
+        }, 1500);
+      }
+    });
+  </script>
 </body>
 </html>
