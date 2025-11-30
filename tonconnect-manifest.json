@@ -1,7 +1,7 @@
 {
-  "url": "https://zeon1222.github.io/tipnick-ton-connect",
+  "url": "https://tipnick-ton-connectx.vercel.app",
   "name": "TipNick Bot",
-  "iconUrl": "https://ton.org/logo.png",
-  "termsOfUseUrl": "https://t.me/tipnickbot",
-  "privacyPolicyUrl": "https://t.me/tipnickbot"
+  "iconUrl": "https://tipnick-ton-connectx.vercel.app/icon.png",
+  "termsOfUseUrl": "https://tipnick-ton-connectx.vercel.app/terms",
+  "privacyPolicyUrl": "https://tipnick-ton-connectx.vercel.app/privacy"
 }
