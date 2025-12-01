@@ -1,26 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>TipNick</title>
-  <script src="https://unpkg.com/@tonconnect/ui@latest"></script>
-  <style>
-    body {margin:0;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;padding:20px;font-family:sans-serif;}
-    h1 {color:#8A2BE2;font-size:28px;}
-    #connectButton {background:#8A2BE2;color:#fff;padding:18px 60px;font-size:22px;border:none;border-radius:50px;margin-top:30px;}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TipNick Bot - Cüzdan Bağla</title>
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <style>
+        body { font-family: Arial; text-align: center; padding: 50px; background: #000; color: white; }
+        #connectButton { margin: 20px; }
+        #status { margin-top: 20px; font-size: 18px; }
+    </style>
 </head>
 <body>
-  <h1>TipNick Bot</h1>
-  <p>@nick ile TON al!</p>
-  <div id="connectButton">CÜZDANI BAĞLA</div>
+    <h1>TipNick Bot</h1>
+    <p>Sadece @nick yazarak para gönder/al</p>
+    <div id="connectButton"></div>
+    <div id="status">Cüzdan bağlanıyor...</div>
 
-  <script>
-    new TON_CONNECT.UI.TonConnectUI({
-      manifestUrl: 'https://tipnick-ton-connect.vercel.app/tonconnect-manifest.json',
-      buttonRootId: 'connectButton'
-    });
-  </script>
+    <script type="module">
+        const tonConnectUI = new TonConnectUI({
+            manifestUrl: 'https://tipnick-ton-connectxx.vercel.app/tonconnect-manifest.json',
+            buttonRootId: 'connectButton'
+        });
+
+        tonConnectUI.onStatusChange(wallet => {
+            const status = document.getElementById('status');
+            if (wallet) {
+                status.innerHTML = `✅ Bağlandı: \( {wallet.account.address.slice(0,6)}... \){wallet.account.address.slice(-4)}`;
+            } else {
+                status.innerHTML = '❌ Bağlanmadı, tekrar dene.';
+            }
+        });
+    </script>
 </body>
 </html>
